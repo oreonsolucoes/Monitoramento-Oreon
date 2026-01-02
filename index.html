@@ -12,7 +12,7 @@
 
     <div id="login-scr" class="fixed inset-0 bg-[#020617] z-[999] flex items-center justify-center p-6">
         <div class="bg-slate-900 border border-slate-800 p-10 rounded-[2rem] w-full max-w-sm">
-            <h1 class="text-2xl font-black text-blue-500 mb-6 italic">OREON PRO</h1>
+            <h1 class="text-2xl font-black text-blue-500 mb-6 italic">MONITOR OREON SOLUÇÕES</h1>
             <input type="email" id="email" placeholder="E-mail" class="w-full p-4 bg-black border border-slate-800 rounded-xl mb-4 outline-none">
             <input type="password" id="pass" placeholder="Senha" class="w-full p-4 bg-black border border-slate-800 rounded-xl mb-6 outline-none">
             <button id="btn-login" class="w-full bg-blue-600 p-4 rounded-xl font-bold">ENTRAR</button>
@@ -22,8 +22,8 @@
     <div id="dash-scr" class="hidden flex-col p-8 max-w-7xl mx-auto">
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h2 class="text-xl font-black italic text-blue-500 uppercase leading-none">Dashboard</h2>
-                <p class="text-[10px] text-slate-500 font-bold mt-1 uppercase">Controle de Ativos</p>
+                <h2 class="text-xl font-black italic text-blue-500 uppercase leading-none">OREON MONITOR</h2>
+                <p class="text-[10px] text-slate-500 font-bold mt-1 uppercase">SOLUÇÃO DE MONITORAMENTO DE DISPOSITIVOS E SERVIÇOS</p>
             </div>
             <button id="btn-logout" class="bg-slate-900 border border-slate-800 px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-red-900/20 transition-all">Sair</button>
         </header>
@@ -40,17 +40,17 @@
                     <p id="det-ip" class="text-blue-500 font-mono text-xs mb-6">0.0.0.0</p>
                     
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Mínimo</p><p id="stat-min" class="text-green-500 font-black text-sm">--</p></div>
-                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Máximo</p><p id="stat-max" class="text-red-500 font-black text-sm">--</p></div>
-                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Média</p><p id="stat-avg" class="text-blue-400 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Lat.Mín</p><p id="stat-min" class="text-green-500 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Lat.Max</p><p id="stat-max" class="text-red-500 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Lat.Média</p><p id="stat-avg" class="text-blue-400 font-black text-sm">--</p></div>
                         <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Últ. Falha</p><p id="stat-fail" class="text-orange-500 font-black text-[10px]">--</p></div>
                     </div>
                 </div>
 
                 <div class="bg-black/20 p-6 rounded-3xl border border-white/5">
                     <h3 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-widest">Editar Dispositivo</h3>
-                    <input type="text" id="edit-nome" placeholder="Novo Nome" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-3 text-sm outline-none">
-                    <input type="text" id="edit-ip" placeholder="Novo IP" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-4 text-sm outline-none">
+                    <input type="text" id="edit-nome" placeholder="Alterar Nome" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-3 text-sm outline-none">
+                    <input type="text" id="edit-ip" placeholder="Alterar IP" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-4 text-sm outline-none">
                     <div class="flex gap-2">
                         <button id="btn-salvar-edit" class="flex-1 bg-blue-600 p-3 rounded-xl text-xs font-bold uppercase">Salvar</button>
                         <button id="btn-excluir-ip" class="bg-red-900/40 hover:bg-red-600 p-3 rounded-xl text-xs text-white transition-all"><i class="fas fa-trash"></i></button>
@@ -65,3 +65,4 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
