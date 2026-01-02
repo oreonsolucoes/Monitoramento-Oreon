@@ -21,8 +21,11 @@
 
     <div id="dash-scr" class="hidden flex-col p-8 max-w-7xl mx-auto">
         <header class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-black italic text-blue-500 uppercase">Dashboard</h2>
-            <button id="btn-logout" class="bg-slate-900 border border-slate-800 px-6 py-2 rounded-full text-xs font-bold uppercase">Sair</button>
+            <div>
+                <h2 class="text-xl font-black italic text-blue-500 uppercase leading-none">Dashboard</h2>
+                <p class="text-[10px] text-slate-500 font-bold mt-1 uppercase">Controle de Ativos</p>
+            </div>
+            <button id="btn-logout" class="bg-slate-900 border border-slate-800 px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-red-900/20 transition-all">Sair</button>
         </header>
         <div id="grid-clientes" class="grid grid-cols-1 lg:grid-cols-3 gap-8"></div>
     </div>
@@ -30,17 +33,32 @@
     <div id="modal-detalhes" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden items-center justify-center p-6 z-[120]">
         <div class="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] w-full max-w-2xl relative shadow-2xl">
             <button onclick="fecharDetalhes()" class="absolute top-6 right-6 text-slate-500 hover:text-white"><i class="fas fa-times"></i></button>
-            <div class="text-center mb-6">
-                <h2 id="det-nome" class="text-2xl font-black uppercase text-white">---</h2>
-                <p id="det-ip" class="text-blue-500 font-mono text-xs">0.0.0.0</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 id="det-nome" class="text-2xl font-black uppercase text-white leading-tight">---</h2>
+                    <p id="det-ip" class="text-blue-500 font-mono text-xs mb-6">0.0.0.0</p>
+                    
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Mínimo</p><p id="stat-min" class="text-green-500 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Máximo</p><p id="stat-max" class="text-red-500 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Média</p><p id="stat-avg" class="text-blue-400 font-black text-sm">--</p></div>
+                        <div class="bg-black/40 p-3 rounded-xl"><p class="text-[7px] text-slate-500 uppercase">Últ. Falha</p><p id="stat-fail" class="text-orange-500 font-black text-[10px]">--</p></div>
+                    </div>
+                </div>
+
+                <div class="bg-black/20 p-6 rounded-3xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-widest">Editar Dispositivo</h3>
+                    <input type="text" id="edit-nome" placeholder="Novo Nome" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-3 text-sm outline-none">
+                    <input type="text" id="edit-ip" placeholder="Novo IP" class="w-full p-3 bg-black border border-slate-800 rounded-xl mb-4 text-sm outline-none">
+                    <div class="flex gap-2">
+                        <button id="btn-salvar-edit" class="flex-1 bg-blue-600 p-3 rounded-xl text-xs font-bold uppercase">Salvar</button>
+                        <button id="btn-excluir-ip" class="bg-red-900/40 hover:bg-red-600 p-3 rounded-xl text-xs text-white transition-all"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
             </div>
-            <div class="grid grid-cols-4 gap-4 mb-8">
-                <div class="bg-black/40 p-4 rounded-2xl text-center"><p class="text-[8px] text-slate-500 uppercase font-bold">Mínimo</p><p id="stat-min" class="text-green-500 font-black">--</p></div>
-                <div class="bg-black/40 p-4 rounded-2xl text-center"><p class="text-[8px] text-slate-500 uppercase font-bold">Máximo</p><p id="stat-max" class="text-red-500 font-black">--</p></div>
-                <div class="bg-black/40 p-4 rounded-2xl text-center"><p class="text-[8px] text-slate-500 uppercase font-bold">Média</p><p id="stat-avg" class="text-blue-400 font-black">--</p></div>
-                <div class="bg-black/40 p-4 rounded-2xl text-center"><p class="text-[8px] text-slate-500 uppercase font-bold">Últ. Falha</p><p id="stat-fail" class="text-orange-500 font-black text-[10px]">--</p></div>
-            </div>
-            <div class="h-48 w-full bg-black/20 rounded-3xl p-4 border border-white/5"><canvas id="mainChart"></canvas></div>
+
+            <div class="h-48 w-full bg-black/20 rounded-3xl p-4 border border-white/5 mt-6"><canvas id="mainChart"></canvas></div>
         </div>
     </div>
 
