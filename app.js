@@ -13,22 +13,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
+let chartInstance = null;
 
-// LOGIN / LOGOUT
-document.getElementById('btn-login').onclick = () => {
-    signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
-};
-document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => location.reload());
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        document.getElementById('login-scr').classList.add('hidden');
-        document.getElementById('dash-scr').classList.replace('hidden', 'flex');
-        onValue(ref(db, 'monitoramento/'), (snap) => render(snap.val()));
-    }
-});
-
-// FUNÇÃO DE RENDERIZAÇÃO (ANTI-PISCADA)
+// RENDERIZAÇÃO
 function render(data) {
     if (!data) return;
     const grid = document.getElementById('grid-clientes');
@@ -38,7 +25,6 @@ function render(data) {
         const info = data[cid].stats;
         if (!info) continue;
 
-        // Criar card se não existir
         if (!card) {
             card = document.createElement('div');
             card.id = `card-${cid}`;
@@ -49,70 +35,91 @@ function render(data) {
                     <span id="sinc-${cid}" class="text-[9px] text-blue-500 font-bold">--</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2 mb-6">
-                    <div class="bg-black/40 p-3 rounded-2xl text-center">
+                    <div class="bg-black/40 p-3 rounded-2xl text-center border border-white/5">
                         <p class="text-[7px] text-slate-500 font-bold uppercase">CPU</p>
                         <p id="cpu-${cid}" class="text-xs font-black text-blue-400">--</p>
                     </div>
-                    <div class="bg-black/40 p-3 rounded-2xl text-center">
+                    <div class="bg-black/40 p-3 rounded-2xl text-center border border-white/5">
                         <p class="text-[7px] text-slate-500 font-bold uppercase">RAM</p>
                         <p id="ram-${cid}" class="text-xs font-black text-purple-400">--</p>
                     </div>
-                    <div class="bg-black/40 p-3 rounded-2xl text-center">
+                    <div class="bg-black/40 p-3 rounded-2xl text-center border border-white/5">
                         <p class="text-[7px] text-slate-500 font-bold uppercase">Boot</p>
                         <p id="boot-${cid}" class="text-xs font-black text-green-500">--</p>
                     </div>
                 </div>
-                <div id="procs-${cid}" class="max-h-80 overflow-y-auto space-y-1"></div>
+                <div class="mb-6">
+                    <p class="text-[8px] text-slate-600 font-black uppercase mb-2 tracking-widest">Rede / Dispositivos</p>
+                    <div id="ips-${cid}" class="space-y-1"></div>
+                </div>
+                <div>
+                    <p class="text-[8px] text-slate-600 font-black uppercase mb-2 tracking-widest">Processos Ativos</p>
+                    <div id="procs-${cid}" class="max-h-64 overflow-y-auto space-y-1 pr-1"></div>
+                </div>
             `;
             grid.appendChild(card);
         }
 
-        // Atualizar textos fixos (SÓ TROCA SE FOR DIFERENTE)
-        const updateText = (id, val) => {
-            const el = document.getElementById(id);
-            if (el.textContent !== val) el.textContent = val;
-        };
-
+        // Atualizar Textos
+        const updateText = (id, val) => { const el = document.getElementById(id); if(el && el.textContent !== val) el.textContent = val; };
         updateText(`sinc-${cid}`, `SINC: ${info.last_seen}`);
         updateText(`cpu-${cid}`, info.hardware.cpu);
         updateText(`ram-${cid}`, info.hardware.ram);
         updateText(`boot-${cid}`, info.hardware.boot);
 
-        // Atualizar lista de processos (RECONCILIAÇÃO)
-        const container = document.getElementById(`procs-${cid}`);
-        const novosPids = info.processos.map(p => p.pid.toString());
-
-        // 1. Remove quem saiu da lista
-        Array.from(container.children).forEach(child => {
-            if (!novosPids.includes(child.dataset.pid)) child.remove();
-        });
-
-        // 2. Atualiza ou Adiciona
-        info.processos.forEach(p => {
-            let pRow = container.querySelector(`[data-pid="${p.pid}"]`);
-            const pMarkup = `
-                <span class="font-bold uppercase truncate w-24">${p.name}</span>
-                <div class="flex items-center gap-3">
-                    <span class="text-slate-400">${p.memory_percent.toFixed(1)}%</span>
-                    <i onclick="window.cmd('${cid}', 'KILL', ${p.pid})" class="fas fa-times text-red-800 hover:text-red-500 cursor-pointer"></i>
-                </div>
-            `;
-
-            if (!pRow) {
-                pRow = document.createElement('div');
-                pRow.className = "proc-item";
-                pRow.dataset.pid = p.pid;
-                pRow.innerHTML = pMarkup;
-                container.appendChild(pRow);
-            } else {
-                if (pRow.innerHTML !== pMarkup) pRow.innerHTML = pMarkup;
+        // Atualizar IPs (Rede)
+        if (info.dispositivos) {
+            const ipContainer = document.getElementById(`ips-${cid}`);
+            for (let nome in info.dispositivos) {
+                const dev = info.dispositivos[nome];
+                let ipRow = ipContainer.querySelector(`[data-nome="${nome}"]`);
+                const ipMarkup = `
+                    <p class="text-[9px] font-bold text-white uppercase">${nome}</p>
+                    <span class="text-[8px] font-black ${dev.status === 'online' ? 'text-green-500' : 'text-red-600'} uppercase">${dev.lat}ms</span>
+                `;
+                if (!ipRow) {
+                    ipRow = document.createElement('div');
+                    ipRow.className = "flex justify-between items-center bg-black/20 p-2 rounded-xl border border-white/5 cursor-pointer hover:bg-black/40";
+                    ipRow.dataset.nome = nome;
+                    ipRow.onclick = () => window.abrirGrafico(cid, nome, dev.ip);
+                    ipRow.innerHTML = ipMarkup;
+                    ipContainer.appendChild(ipRow);
+                } else if (ipRow.innerHTML !== ipMarkup) {
+                    ipRow.innerHTML = ipMarkup;
+                }
             }
+        }
+
+        // Atualizar Processos (Mesma lógica do anterior)
+        const procContainer = document.getElementById(`procs-${cid}`);
+        const pids = info.processos.map(p => p.pid.toString());
+        Array.from(procContainer.children).forEach(c => { if(!pids.includes(c.dataset.pid)) c.remove(); });
+        info.processos.forEach(p => {
+            let pRow = procContainer.querySelector(`[data-pid="${p.pid}"]`);
+            const pMarkup = `<span class="truncate w-24">${p.name}</span><div class="flex items-center gap-2"><span>${p.memory_percent.toFixed(1)}%</span><i onclick="window.cmd('${cid}', 'KILL', ${p.pid})" class="fas fa-times text-red-900 hover:text-red-500 cursor-pointer"></i></div>`;
+            if(!pRow) {
+                pRow = document.createElement('div'); pRow.className = "proc-item"; pRow.dataset.pid = p.pid; pRow.innerHTML = pMarkup; procContainer.appendChild(pRow);
+            } else if(pRow.innerHTML !== pMarkup) { pRow.innerHTML = pMarkup; }
         });
     }
 }
 
-window.cmd = (cid, acao, pid) => {
-    if (confirm(`${acao} processo ${pid}?`)) {
-        set(ref(db, `monitoramento/${cid}/cmd`), { acao, pid, timestamp: Date.now() });
-    }
+// GRÁFICOS
+window.abrirGrafico = (cid, nome, ip) => {
+    document.getElementById('detalhe-nome').innerText = nome;
+    document.getElementById('detalhe-ip').innerText = ip;
+    document.getElementById('modal-detalhes').classList.replace('hidden', 'flex');
+    // Aqui você pode adicionar a lógica de carregar histórico do Firebase se desejar
 };
+
+window.fecharDetalhes = () => document.getElementById('modal-detalhes').classList.replace('flex', 'hidden');
+
+// Auth e Boot (Igual ao anterior)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        document.getElementById('login-scr').classList.add('hidden');
+        document.getElementById('dash-scr').classList.replace('hidden', 'flex');
+        onValue(ref(db, 'monitoramento/'), (snap) => render(snap.val()));
+    }
+});
+document.getElementById('btn-login').onclick = () => signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value);
