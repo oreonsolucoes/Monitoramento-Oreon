@@ -1,29 +1,60 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
+
+body { letter-spacing: -0.01em; }
+
 .card-monitor {
-    background: #0f172a; border: 1px solid #1e293b; border-radius: 2rem;
-    padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
-    display: flex; flex-direction: column; gap: 1rem;
-    transition: transform 0.3s ease;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2.5rem;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.proc-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0.5rem; background: rgba(0,0,0,0.2); margin-bottom: 0.25rem;
-    border-radius: 0.5rem; font-size: 10px; border: 1px solid transparent;
+.card-monitor:hover {
+    transform: translateY(-5px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.5);
 }
 
 .ip-item {
     display: flex; justify-content: space-between; align-items: center;
-    background: rgba(15, 23, 42, 0.8); padding: 0.75rem; border-radius: 1.25rem;
-    border: 1px solid rgba(255,255,255,0.03); transition: 0.2s all;
+    background: rgba(0,0,0,0.2); 
+    padding: 1rem; 
+    border-radius: 1.5rem;
+    border: 1px solid transparent; 
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
 }
 
 .ip-item:hover { 
-    border-color: #334155; 
-    background: #1e293b;
-    transform: translateX(4px);
+    background: rgba(59, 130, 246, 0.05);
+    border-color: rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+    cursor: pointer;
 }
 
-input::placeholder { color: #475569; }
+.proc-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 1rem; 
+    background: rgba(255,255,255,0.02); 
+    border-radius: 1rem;
+    font-size: 10px; 
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    border: 1px solid rgba(255,255,255,0.03);
+}
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+/* Efeito de carregamento suave */
+#modal-detalhes.flex {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
