@@ -1,3 +1,26 @@
+/* Garante o fundo escuro atrás das partículas */
+body {
+    background-color: #020617; /* A cor original que você usava */
+    margin: 0;
+    padding: 0;
+}
+
+/* O container das partículas deve cobrir tudo e ficar atrás */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Fica atrás do conteúdo */
+}
+
+/* Garante que seu dashboard e login fiquem por cima das partículas */
+#login-scr, #dash-scr {
+    position: relative;
+    z-index: 1;
+}
+
 .card-monitor {
     background: #0f172a; border: 1px solid #1e293b; border-radius: 2rem;
     padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
@@ -27,3 +50,4 @@ input::placeholder { color: #475569; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+
